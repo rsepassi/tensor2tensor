@@ -29,7 +29,7 @@ before_install:
   # - echo "deb [arch=amd64] http://storage.googleapis.com/tensorflow-serving-apt stable tensorflow-model-server tensorflow-model-server-universal" | sudo tee /etc/apt/sources.list.d/tensorflow-serving.list
   # - curl https://storage.googleapis.com/tensorflow-serving-apt/tensorflow-serving.release.pub.gpg | sudo apt-key add -
   - sudo apt-get update -qq
-  - sudo apt-get install -qq libhdf5-dev
+  #- sudo apt-get install -qq libhdf5-dev
   # - sudo apt-get install -qq tensorflow-model-server
 install:
   - pip install -q "tensorflow==$TF_VERSION"
@@ -81,6 +81,8 @@ script:
   #- if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]] && [[ "$TF_VERSION" == "$TF_LATEST"  ]]; then
         #pytest tensor2tensor/rl/model_rl_experiment_test.py;
     #fi
+  - mkdir /tmp/t2t-data
+  - gsutil cp gs://t2t-test/data/vocab.ende.32768 /tmp/t2t-data
   - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]] && [[ "$TF_VERSION" == "$TF_LATEST"  ]]; then
         jupyter nbconvert --to notebook --execute tensor2tensor/notebooks/hello_t2t.ipynb;
     fi
