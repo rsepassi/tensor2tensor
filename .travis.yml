@@ -1,7 +1,7 @@
 language: python
 python:
   - "2.7"
-  - "3.6"
+  #- "3.6"
 env:
   global:
     - T2T_PROBLEM=algorithmic_reverse_binary40_test
@@ -11,19 +11,18 @@ env:
   matrix:
     # We test against the last 4 versions of TensorFlow
     # If updating, also update TF_LATEST above
-    - TF_VERSION="1.5.*"
-    - TF_VERSION="1.6.*"
-    - TF_VERSION="1.7.*"
+    #- TF_VERSION="1.5.*"
+    #- TF_VERSION="1.6.*"
+    #- TF_VERSION="1.7.*"
     - TF_VERSION="1.8.*"
-matrix:
-  exclude:
+#matrix: exclude:
     # We test against all versions in Python 2 but only the latest in Python 3
-    - python: "3.6"
-      env: TF_VERSION="1.5.*"
-    - python: "3.6"
-      env: TF_VERSION="1.6.*"
-    - python: "3.6"
-      env: TF_VERSION="1.7.*"
+    #- python: "3.6"
+      #env: TF_VERSION="1.5.*"
+    #- python: "3.6"
+      #env: TF_VERSION="1.6.*"
+    #- python: "3.6"
+      #env: TF_VERSION="1.7.*"
 before_install:
   # Disabled TensorFlow Serving install until bug fixed. See "Export and query"
   # section below.
@@ -40,7 +39,7 @@ install:
   - pip install -q -U numpy
 script:
   # Check import
-  - python -c "from tensor2tensor.models import transformer; print(transformer.Transformer.__name__)"
+  #- python -c "from tensor2tensor.models import transformer; print(transformer.Transformer.__name__)"
 
   # Run tests
   # Ignores:
@@ -51,37 +50,37 @@ script:
   #   * model_rl_experiment_test
   # algorithmic_math_test: flaky
   # r_transformer_test: requires new feature in tf.foldl (rm with TF 1.9)
-  - pytest
-    --ignore=tensor2tensor/utils/registry_test.py
-    --ignore=tensor2tensor/utils/trainer_lib_test.py
-    --ignore=tensor2tensor/visualization/visualization_test.py
-    --ignore=tensor2tensor/bin/t2t_trainer_test.py
-    --ignore=tensor2tensor/data_generators/algorithmic_math_test.py
-    --ignore=tensor2tensor/models/research/r_transformer_test.py
-    --ignore=tensor2tensor/rl/model_rl_experiment_test.py
-  - pytest tensor2tensor/utils/registry_test.py
-  - pytest tensor2tensor/utils/trainer_lib_test.py
-  - pytest tensor2tensor/visualization/visualization_test.py
+  #- pytest
+    #--ignore=tensor2tensor/utils/registry_test.py
+    #--ignore=tensor2tensor/utils/trainer_lib_test.py
+    #--ignore=tensor2tensor/visualization/visualization_test.py
+    #--ignore=tensor2tensor/bin/t2t_trainer_test.py
+    #--ignore=tensor2tensor/data_generators/algorithmic_math_test.py
+    #--ignore=tensor2tensor/models/research/r_transformer_test.py
+    #--ignore=tensor2tensor/rl/model_rl_experiment_test.py
+  #- pytest tensor2tensor/utils/registry_test.py
+  #- pytest tensor2tensor/utils/trainer_lib_test.py
+  #- pytest tensor2tensor/visualization/visualization_test.py
 
-  # Run installed scripts
-  - t2t-datagen 2>&1 | grep translate && echo passed
-  - t2t-trainer --registry_help
+  ## Run installed scripts
+  #- t2t-datagen 2>&1 | grep translate && echo passed
+  #- t2t-trainer --registry_help
 
-  # Test --t2t_usr_dir
-  - t2t-trainer --registry_help --t2t_usr_dir=./tensor2tensor/test_data/example_usr_dir 2>&1 | grep my_very_own_hparams && echo passed
+  ## Test --t2t_usr_dir
+  #- t2t-trainer --registry_help --t2t_usr_dir=./tensor2tensor/test_data/example_usr_dir 2>&1 | grep my_very_own_hparams && echo passed
 
-  # Run data generation, training, and decoding on a dummy problem
-  - t2t-datagen --problem=$T2T_PROBLEM --data_dir=$T2T_DATA_DIR
-  - t2t-trainer --problem=$T2T_PROBLEM --data_dir=$T2T_DATA_DIR --model=transformer --hparams_set=transformer_tiny --train_steps=5 --eval_steps=5 --output_dir=$T2T_TRAIN_DIR
-  - t2t-decoder --problem=$T2T_PROBLEM --data_dir=$T2T_DATA_DIR --model=transformer --hparams_set=transformer_tiny --output_dir=$T2T_TRAIN_DIR --decode_hparams='num_samples=10'
+  ## Run data generation, training, and decoding on a dummy problem
+  #- t2t-datagen --problem=$T2T_PROBLEM --data_dir=$T2T_DATA_DIR
+  #- t2t-trainer --problem=$T2T_PROBLEM --data_dir=$T2T_DATA_DIR --model=transformer --hparams_set=transformer_tiny --train_steps=5 --eval_steps=5 --output_dir=$T2T_TRAIN_DIR
+  #- t2t-decoder --problem=$T2T_PROBLEM --data_dir=$T2T_DATA_DIR --model=transformer --hparams_set=transformer_tiny --output_dir=$T2T_TRAIN_DIR --decode_hparams='num_samples=10'
 
-  # Do some things only on Python 2 and the latest TF version
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]] && [[ "$TF_VERSION" == "$TF_LATEST"  ]]; then
-        pylint -j 2 tensor2tensor;
-    fi
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]] && [[ "$TF_VERSION" == "$TF_LATEST"  ]]; then
-        pytest tensor2tensor/rl/model_rl_experiment_test.py;
-    fi
+  ## Do some things only on Python 2 and the latest TF version
+  #- if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]] && [[ "$TF_VERSION" == "$TF_LATEST"  ]]; then
+        #pylint -j 2 tensor2tensor;
+    #fi
+  #- if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]] && [[ "$TF_VERSION" == "$TF_LATEST"  ]]; then
+        #pytest tensor2tensor/rl/model_rl_experiment_test.py;
+    #fi
   - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]] && [[ "$TF_VERSION" == "$TF_LATEST"  ]]; then
         jupyter nbconvert --to notebook --execute tensor2tensor/notebooks/hello_t2t.ipynb;
     fi
