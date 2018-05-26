@@ -85,7 +85,7 @@ script:
   - mkdir /tmp/t2t-data
   - gsutil cp gs://t2t-test/data/vocab.ende.32768 /tmp/t2t-data
   - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]] && [[ "$TF_VERSION" == "$TF_LATEST"  ]]; then
-        jupyter nbconvert --to notebook --execute tensor2tensor/notebooks/hello_t2t.ipynb;
+        jupyter nbconvert --ExecutePreprocessor.timeout=600 --to notebook --execute tensor2tensor/notebooks/hello_t2t.ipynb;
     fi
 
   # Export and query (on Python 2 only)
