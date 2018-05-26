@@ -35,6 +35,7 @@ before_install:
 install:
   - pip install -q "tensorflow==$TF_VERSION"
   - pip install -q .[tests]
+  - pip install -q "gym[atari]"
   # Make sure we have the latest version of numpy - avoid problems we were
   # seeing with Python 3
   - pip install -q -U numpy
@@ -79,13 +80,8 @@ script:
   #- if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]] && [[ "$TF_VERSION" == "$TF_LATEST"  ]]; then
         #pylint -j 2 tensor2tensor;
     #fi
-  #- if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]] && [[ "$TF_VERSION" == "$TF_LATEST"  ]]; then
-        #pytest tensor2tensor/rl/model_rl_experiment_test.py;
-    #fi
-  - mkdir /tmp/t2t-data
-  - gsutil cp gs://t2t-test/data/vocab.ende.32768 /tmp/t2t-data
   - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]] && [[ "$TF_VERSION" == "$TF_LATEST"  ]]; then
-        jupyter nbconvert --ExecutePreprocessor.timeout=600 --to notebook --execute tensor2tensor/notebooks/hello_t2t.ipynb;
+        pytest tensor2tensor/rl/model_rl_experiment_test.py;
     fi
 
   # Export and query (on Python 2 only)
