@@ -8,6 +8,7 @@ env:
     - T2T_DATA_DIR=/tmp/t2t-data
     - T2T_TRAIN_DIR=/tmp/t2t-train
     - TF_LATEST="1.8.*"
+    - BOTO_CONFIG=/dev/null
   matrix:
     # We test against the last 4 versions of TensorFlow
     # If updating, also update TF_LATEST above
