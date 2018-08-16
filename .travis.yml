@@ -27,7 +27,24 @@ before_install:
   - echo "deb [arch=amd64] http://storage.googleapis.com/tensorflow-serving-apt stable tensorflow-model-server tensorflow-model-server-universal" | sudo tee /etc/apt/sources.list.d/tensorflow-serving.list
   - curl https://storage.googleapis.com/tensorflow-serving-apt/tensorflow-serving.release.pub.gpg | sudo apt-key add -
   - sudo apt-get update -qq
-  - sudo apt-get install -qq libhdf5-dev libstdc++6
+  - sudo apt-get install -qq libhdf5-dev
+  # TensorFlow serving deps
+  - sudo apt-get install -qq
+        automake
+        build-essential
+        libcurl3-dev
+        libfreetype6-dev
+        libpng12-dev
+        libtool
+        libzmq3-dev
+        mlocate
+        pkg-config
+        python-dev
+        software-properties-common
+        swig
+        wget
+        zip
+        zlib1g-dev
   - sudo apt-get install -qq tensorflow-model-server
 install:
   - if [[ "$TF_VERSION" == "tf-nightly"  ]];
