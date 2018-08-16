@@ -31,6 +31,7 @@ before_install:
   # TensorFlow serving deps
   - sudo apt-get install -qq
         automake
+        libstdc++6
         build-essential
         libcurl3-dev
         libfreetype6-dev
