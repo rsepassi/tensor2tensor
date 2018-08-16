@@ -27,7 +27,7 @@ before_install:
   - echo "deb [arch=amd64] http://storage.googleapis.com/tensorflow-serving-apt stable tensorflow-model-server tensorflow-model-server-universal" | sudo tee /etc/apt/sources.list.d/tensorflow-serving.list
   - curl https://storage.googleapis.com/tensorflow-serving-apt/tensorflow-serving.release.pub.gpg | sudo apt-key add -
   - sudo apt-get update -qq
-  - sudo apt-get install -qq libhdf5-dev
+  - sudo apt-get install -qq libhdf5-dev libstdc++6
   - sudo apt-get install -qq tensorflow-model-server
 install:
   - if [[ "$TF_VERSION" == "tf-nightly"  ]];
@@ -38,11 +38,11 @@ install:
     fi
   # First ensure that the base dependencies are sufficient for a full import
   - pip install -q .
-  - t2t-trainer --registry_help
+  #- t2t-trainer --registry_help
   # Then install the test dependencies
-  - pip install -q .[tests,allen]
+  #- pip install -q .[tests,allen]
   # Make sure to install the atari extras for gym
-  - pip install "gym[atari]"
+  #- pip install "gym[atari]"
   # Make sure we have the latest version of numpy - avoid problems we were
   # seeing with Python 3
   - pip install -q -U numpy
