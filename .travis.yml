@@ -3,7 +3,7 @@ language: python
 git:
   depth: 3
 services:
-	- docker
+  - docker
 python:
   - "2.7"
   - "3.6"
