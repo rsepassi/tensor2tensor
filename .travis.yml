@@ -116,7 +116,7 @@ script:
         t2t-exporter --problem=$T2T_PROBLEM --data_dir=$T2T_DATA_DIR --model=transformer --hparams_set=transformer_tiny --output_dir=$T2T_TRAIN_DIR;
         pip install tensorflow-serving-api;
         docker pull tensorflow/serving;
-        docker run -p 8501:8501 --mount type=bind,source=$T2T_TRAIN_DIR/export/Servo,target=/models/my_model -e MODEL_NAME=my_model -t tensorflow/serving &
+        docker run -d -p 8501:8501 --mount type=bind,source=$T2T_TRAIN_DIR/export/Servo,target=/models/my_model -e MODEL_NAME=my_model -t tensorflow/serving
         sleep 10;
         t2t-query-server --problem=$T2T_PROBLEM --server=localhost:8501 --servable_name=my_model --data_dir=$T2T_DATA_DIR --inputs_once='1 0 1 0 1 0';
     fi
