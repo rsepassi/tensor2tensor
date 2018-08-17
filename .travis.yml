@@ -1,4 +1,9 @@
+sudo: required
 language: python
+git:
+  depth: 3
+services:
+	- docker
 python:
   - "2.7"
   - "3.6"
@@ -24,29 +29,8 @@ matrix:
     - python: "3.6"
       env: TF_VERSION="tf-nightly"
 before_install:
-  - echo "deb [arch=amd64] http://storage.googleapis.com/tensorflow-serving-apt stable tensorflow-model-server tensorflow-model-server-universal" | sudo tee /etc/apt/sources.list.d/tensorflow-serving.list
-  - curl https://storage.googleapis.com/tensorflow-serving-apt/tensorflow-serving.release.pub.gpg | sudo apt-key add -
   - sudo apt-get update -qq
   - sudo apt-get install -qq libhdf5-dev
-  # TensorFlow serving deps
-  - sudo apt-get install -qq
-        automake
-        libstdc++6
-        build-essential
-        libcurl3-dev
-        libfreetype6-dev
-        libpng12-dev
-        libtool
-        libzmq3-dev
-        mlocate
-        pkg-config
-        python-dev
-        software-properties-common
-        swig
-        wget
-        zip
-        zlib1g-dev
-  - sudo apt-get install -qq tensorflow-model-server
 install:
   - if [[ "$TF_VERSION" == "tf-nightly"  ]];
     then
@@ -131,9 +115,8 @@ script:
   - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]] && [[ "$TF_VERSION" == "$TF_LATEST"  ]]; then
         t2t-exporter --problem=$T2T_PROBLEM --data_dir=$T2T_DATA_DIR --model=transformer --hparams_set=transformer_tiny --output_dir=$T2T_TRAIN_DIR;
         pip install tensorflow-serving-api;
-        tensorflow_model_server --port=9000 --model_name=my_model --model_base_path=$T2T_TRAIN_DIR/export/Servo &
+        docker pull tensorflow/serving;
+        docker run -p 8501:8501 --mount type=bind,source=$T2T_TRAIN_DIR/export/Servo,target=/models/my_model -e MODEL_NAME=my_model -t tensorflow/serving &
         sleep 10;
-        t2t-query-server --problem=$T2T_PROBLEM --server=localhost:9000 --servable_name=my_model --data_dir=$T2T_DATA_DIR --inputs_once='1 0 1 0 1 0';
+        t2t-query-server --problem=$T2T_PROBLEM --server=localhost:8501 --servable_name=my_model --data_dir=$T2T_DATA_DIR --inputs_once='1 0 1 0 1 0';
     fi
-git:
-  depth: 3
